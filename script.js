@@ -28,10 +28,26 @@ function initGame() {
 
 initGame();
 
+function swapTurn(){
+    if (currentPlayer === "X"){
+        currentPlayer = "O";
+    }else{
+        currentPlayer = "X";
+    }
+    //UI Update
+    gameInfo.innerText = `Current Player - ${currentPlayer}`;
+}
+
+
 function handleClick(index){
- if(gameGrid[index] === "" ) {
-    boxes[index].innerHTML = currentPlayer;
+ if(gameGrid[index] === "" ) { 
+    boxes[index].innerText = currentPlayer;
     gameGrid[index] = currentPlayer;
+    // After this swap the turn for the next player.
+     swapTurn();
+     // After this check if someone has won.
+     checkWinner();
+
  }
 }
 
@@ -40,4 +56,3 @@ boxes.forEach((box,index)=>{
         handleClick(index);
     })
 });
-
