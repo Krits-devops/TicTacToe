@@ -22,6 +22,18 @@ const winningPositions = [
 function initGame() {
     currentPlayer = "X";
     gameGrid = ["" ,"" ,"" ,"", "", "" ,"" ,"" ,""];
+
+    //Making all the boxes empty on UI
+    boxes.forEach((box,index)=>{
+        box.innerText = "";
+        boxes[index].style.pointerEvents = "all";
+    })
+
+    boxes.forEach((box)=>{
+        box.classList.remove('win');
+    })
+
+
     newGameBtn.classList.remove("active");
     gameInfo.innerText = `Current Player - ${currentPlayer}`;
 }
@@ -38,11 +50,60 @@ function swapTurn(){
     gameInfo.innerText = `Current Player - ${currentPlayer}`;
 }
 
+function checkWinner(){
+
+    let answer = "";
+
+    winningPositions.forEach((position)=>{
+        if( (gameGrid[position[0]] !== "" || gameGrid[position[1]] !== "" || gameGrid[position[2]] !== "") 
+          && (gameGrid[position[0]] === gameGrid[position[1]]) && (gameGrid[position[1]] === gameGrid[position[2]]) ) {
+        
+            if(gameGrid[position[0]] === "X")
+                answer = "X";
+            else
+            answer = "O";
+
+            //disable pointer 
+            boxes.forEach((box)=>{
+                box.style.pointerEvents = 'none';
+            })
+
+            boxes[position[0]].classList.add("win");
+            boxes[position[1]].classList.add("win");
+            boxes[position[2]].classList.add("win");
+        }
+    })
+
+    if(answer != ''){
+        gameInfo.innerText = `Winner Player - ${answer}`;
+        newGameBtn.classList.add("active");
+        return;
+    }
+
+    // Scenario for tied game
+
+    let fillCount  = 0;
+    gameGrid.forEach((box)=>{
+        if(box !== ""){
+            fillCount++;
+            // gameInfo.innerText = "Game is tied!";
+            // newGameBtn.classList.add('active');
+        }
+     });
+
+     if(fillCount === 9){
+        gameInfo.innerText = "Game is tied!";
+        newGameBtn.classList.add('active');
+     }
+
+}
+
 
 function handleClick(index){
  if(gameGrid[index] === "" ) { 
     boxes[index].innerText = currentPlayer;
     gameGrid[index] = currentPlayer;
+    boxes[index].style.pointerEvents = "none";
     // After this swap the turn for the next player.
      swapTurn();
      // After this check if someone has won.
@@ -56,3 +117,6 @@ boxes.forEach((box,index)=>{
         handleClick(index);
     })
 });
+
+
+newGameBtn.addEventListener("click", initGame);
